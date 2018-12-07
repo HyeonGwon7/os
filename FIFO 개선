@@ -1,0 +1,111 @@
+/* package whatever; // don't place package name! */
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+/* Name of the class has to be "Main" only if the class is public. */
+class Ideone
+{
+	public static void main(String args[]) {
+		
+		Scanner sc = new Scanner(System.in);
+		Random rand = new Random();
+		int pageNum[] = new int[20];
+		
+		for(int i = 0 ; i < 20 ; i ++)
+			pageNum[i]=rand.nextInt(10);			
+		
+		for(int i = 1 ; i < 8 ; i ++ ) {
+			System.out.println("프레임 "+i+"일 때");
+			getFrame(i,pageNum);
+		}
+	}
+	
+	/* 프레임 출력 함수 */
+	public static void printFrame(int frame[]) {
+		for(int i = 0 ; i < frame.length; i++) {
+			System.out.print(frame[i]+" ");
+		}
+	}
+	
+	/* 프레임 페이지 폴트 연산 함수 */
+	public static void getFrame(int frameNum , int pageNum[]) {
+		
+		int frame[] = new int[frameNum];
+		//int pageNum[] =new int[20];
+		
+		int maxPageIndex = pageNum.length;
+		int check=0;
+		int first=0;
+		int pagefault = 0;
+		
+	
+		//pageNum = {1,2,3,4,1,2,5,1,2,3,4,5};
+		//7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1
+		
+		
+		
+		System.out.print("생성된 페이지  : ");	
+		for(int i = 0 ; i < maxPageIndex ; i ++ ) {
+			System.out.print(pageNum[i]+" ");	
+		}
+		
+		System.out.println(" 생성 개수 : "+maxPageIndex);
+		
+		
+		for (int i = 0 ; i < frameNum ; i ++){
+			frame[i]=100;
+		}
+		
+		
+		for (int i = 0 ; i < maxPageIndex ; i ++) {
+			
+			if(i==0){
+				frame[i] = pageNum[i];
+			}
+			
+			else{
+				for(int j = 0; j < frameNum ; j++) {
+				if(frame[j] != pageNum[i]) {
+					check ++;
+				}
+			}	
+			
+			if(check==frameNum) {
+				// 프레임에 꽉 차지 않고 페이지와 같은 값이 없는 경우
+				if(frame[frameNum-1]==100) {
+					for(int j = 0 ; j < frameNum ; j++ ) {
+						if(frame[j]==100) {
+							frame[j]=pageNum[i];
+							pagefault++;
+							break;
+						}
+					}
+				}
+			
+			
+				else{
+					frame[first]=pageNum[i];
+					first=first+1;
+					pagefault++;
+					
+					if(first ==frameNum) {
+						first = 0;
+					}	
+				}
+			}
+			
+			check = 0;
+			System.out.print("#"+(i+1)+ "프레임 : ");
+			printFrame(frame);
+			System.out.println();
+			
+		}
+		
+		System.out.println("페이지 Faults : " + pagefault);
+		System.out.println();
+		
+		}
+	}
+}
