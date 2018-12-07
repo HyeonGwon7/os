@@ -1,0 +1,133 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class Optimal {
+public static void main(String args[]) {
+		
+		Scanner sc = new Scanner(System.in);
+		Random rand = new Random();
+		int pageNum[] = new int[20];
+		
+		int test[] = {7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1};
+		int test2[] = {1,2,3,4,1,2,5,1,2,3,4,5};
+		
+		for(int i = 0 ; i < 20 ; i ++)
+			pageNum[i]=rand.nextInt(10);			
+		
+		/*
+		for(int j = 1 ; j < 8 ; j ++ ) {
+			System.out.println("프레임 "+j+"일 때");
+			getFrame(j,pageNum);
+		}
+		*/
+		  
+		
+		getFrame(3,test);
+	}
+	
+	/* 프레임 출력 함수 */
+	public static void printFrame(int frame[]) {
+		for(int i = 0 ; i < frame.length; i++) {
+			System.out.print(frame[i]+" ");
+		}
+	}
+	
+	
+	/* 프레임 페이지 폴트 연산 함수 */
+	public static void getFrame(int frameNum , int pageNum[]) {
+		
+		int frame[] = new int[frameNum];
+		int maxPageIndex = pageNum.length;
+		int lastIndex[] = new int[10];
+		int pagefault = 0;
+		int check = 0;
+		int changeIndex = 0;
+		int changeFrame = 0; 
+		boolean isSame = false;
+		
+		
+		
+		System.out.print("생성된 페이지  : ");	
+		for(int i = 0 ; i < maxPageIndex ; i ++ ) {
+			System.out.print(pageNum[i]+" ");	
+		}
+		
+		System.out.println(" 생성 개수 : "+maxPageIndex);
+		
+		
+		for(int i = 0; i < frameNum; i++) {
+				frame[i]=100;
+		}
+		
+		
+		for(int i = 0 ; i < pageNum.length;i++) {
+
+			if(i==0) {
+				frame[i]= pageNum[i];
+				pagefault++;
+			}
+			
+			
+			else {
+			for(int j = 0; j < frameNum ; j++) {
+				if(frame[j] != pageNum[i]) {
+					check ++;
+				}
+			}
+			
+			if(check==frameNum) {
+				// 프레임에 꽉 차지 않고 페이지와 같은 값이 없는 경우
+				if(frame[frameNum-1]==100) {
+					for(int j = 0 ; j < frameNum ; j++ ) {
+						if(frame[j]==100) {
+							frame[j]=pageNum[i];
+							pagefault++;
+							break;
+						}
+					}
+				}
+				// 프레임이 꽉 차고 페이지와 같은 값이 없는 경우
+				else {
+					
+					for(int j = 0 ; j < frameNum ; j++) {
+						for(int k = i+1 ; k < pageNum.length; k++) {
+							if(frame[j] == pageNum[k]) {
+								lastIndex[frame[j]]=k;
+								isSame = true;
+								break;
+							}							
+						}
+						if(isSame == false) {
+							lastIndex[frame[j]] = 100;
+						}
+						isSame = false;
+					}
+					
+					
+					for(int j = 0 ; j < frameNum ; j ++) {
+						if(lastIndex[frame[j]]>changeIndex) {
+							changeIndex = lastIndex[frame[j]];
+							changeFrame = j;
+						}
+					}
+					frame[changeFrame] = pageNum[i];
+					pagefault++;
+					changeIndex = 0;
+				}
+			}
+			}
+			check=0;
+			System.out.print("#"+(i+1)+ "프레임 : ");
+			printFrame(frame);
+			System.out.println();
+		
+			
+			
+			
+		}
+		
+		
+	
+		
+	}
+}
