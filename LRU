@@ -19,7 +19,7 @@ public class LRU {
 			getFrame(j,pageNum);
 		}
 		
-	//	getFrame(4,pageNum);
+		getFrame(3,test);
 	}
 	
 	/* 프레임 출력 함수 */
@@ -55,32 +55,37 @@ public class LRU {
 		
 		
 		for (int i = 0 ; i < maxPageIndex ; i ++) {
-			
+			// frame[0]에 페이지 넣기
 			if(i==0) {
 				pagefault ++;
 				frame[i]=pageNum[i];
 			}
 			
+			
 			else {
+				//페이지 중복 확인
 				for(int j = 0; j < frameNum ; j++) {
 					if(frame[j] != pageNum[i]) {
 						check ++;
 					}
 				}
 				
-				// 프레임이 안창 상태에서 없는 값 참조 
-				if(check == frameNum && i < frameNum) {
-					if(frame[i]==100) {
-						pagefault ++;
-						frame[i] = pageNum[i];
+				// 페이지 중복이 없고 프레임이 꽉 안찬 경우
+				if(check == frameNum ) {
+					if(frame[frameNum-1]==100) {
+						for(int j = 0; j < frameNum ; j++) {
+							if(frame[j]==100) {
+								pagefault ++;
+								frame[j] = pageNum[i];
+								break;
+							}
+						}
 					}
 					
-				}	
-				
-				// 프레임이 다 찬 상태에서 없는 값 참조
-				else if(check == frameNum && i>=frameNum) {
-				
 					
+				
+				// 프레임 중복이 없고 프레임이 꽉 찬 경우
+					else {
 						for(int j = 0; j < frameNum ; j++) {
 							
 							if(stack[stackIndex]==-1) {
@@ -95,8 +100,7 @@ public class LRU {
 								break;
 							}
 						}
-					
-					
+					}
 				}
 				
 				// 중복된 값이 있을 경우
@@ -131,4 +135,6 @@ public class LRU {
 		
 	}
 }
+
+
 
